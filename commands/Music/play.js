@@ -15,7 +15,7 @@ const {
   options: [
     {
       name: "pesquisa",
-      description: "Faça uma pesquisa no youtube",
+      description: "Faça uma pesquisa no youtube || URL || PLAYLIST",
       type: ApplicationCommandOptionType.String,
       required: false
     }
