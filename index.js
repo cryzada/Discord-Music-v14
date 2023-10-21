@@ -69,7 +69,7 @@ client.on("interactionCreate", async (interaction) => {
 
         if (!cmd) return;
 		
-		cmd.run(client, interaction,handleVideo, queue, disconnectToChannel);
+	cmd.run(client, interaction,handleVideo, queue, disconnectToChannel);
 
     }
 	
