@@ -31,24 +31,24 @@ const client = new Client({
     "Guilds",
 	"GuildMembers",
 	"GuildMessageReactions",
-    "GuildMessages",
-    "GuildVoiceStates",
-    "GuildMessageTyping",
-    "GuildIntegrations",
+    	"GuildMessages",
+    	"GuildVoiceStates",
+    	"GuildMessageTyping",
+    	"GuildIntegrations",
 	"GuildEmojisAndStickers",
 	"GuildBans",
 	"GuildInvites",
 	"DirectMessageReactions",
 	"GuildPresences",
 	"GuildWebhooks",
-    "MessageContent",
-    "DirectMessageTyping",
-    "DirectMessages",
+    	"MessageContent",
+    	"DirectMessageTyping",
+    	"DirectMessages",
 	"AutoModerationConfiguration",
 	"AutoModerationExecution",
 	GatewayIntentBits.GuildMessages,
 	GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.Guilds,
+    	GatewayIntentBits.Guilds,
 	GatewayIntentBits.DirectMessages,
 	GatewayIntentBits.MessageContent,
 	GatewayIntentBits.DirectMessageTyping
@@ -124,14 +124,14 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		title: escapeMarkdown(video.title),
 		url: `https://www.youtube.com/watch?v=${video.id}`
 		/*
-		Se você quiser personalizar o bot completamente do seu jeito, adicione mais informações a este objeto
+		Se você quiser personalizar o bot completamente do seu jeito adicione mais informações a este objeto
 		*/
 	};
 
 	if (!serverQueue) {
 
 		const queueConstruct = {
-            player: createAudioPlayer(),
+            		player: createAudioPlayer(),
 			textChannel: msg.channel,
 			voiceChannel: voiceChannel,
 			connection: null,
@@ -139,7 +139,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 			volume: 5,
 			playing: true,
 			loop: false, 
-            stopLoop: false // Uma solução para interromper o loop no final da música
+            		stopLoop: false // Uma solução para interromper o loop no final da música
 		};
 
 		queue.set(msg.guild.id, queueConstruct);
@@ -190,14 +190,13 @@ async function play(guild, song) {
 
 	serverQueue.player.on(AudioPlayerStatus.Idle,async () => {
 
-        if(serverQueue.stopLoop){
-            clearTimeout(serverQueue.stopLoop);
-			serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
-            return;
-        }
-
-        serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
-
+	        if(serverQueue.stopLoop){
+	            clearTimeout(serverQueue.stopLoop);
+		    serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+	            return;
+		}
+		
+	        serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
 		if(!serverQueue.loop) serverQueue.songs.shift();
 		play(guild, serverQueue.songs[0]);
 		
