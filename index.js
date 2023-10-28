@@ -1,93 +1,76 @@
-const {
-  Client,
-  GatewayIntentBits,
-  InteractionType,
-  Collection,
-  EmbedBuilder,
-  ActivityType,
-  escapeMarkdown,
-  Partials,
-  AttachmentBuilder
-} = require("discord.js");
-
-const {
-	NoSubscriberBehavior,
-	StreamType,
-	createAudioPlayer,
-	createAudioResource,
-	createReadStream,
-	entersState,
-	AudioPlayerStatus,
-	VoiceConnectionStatus,
-	joinVoiceChannel
-} = require('@discordjs/voice');
-
-const config = require("./config.json");
-const PlayDL = require("play-dl");
-const queue = new Map();
-
-const client = new Client({ 
-  intents: [
-    "Guilds",
-	"GuildMembers",
-	"GuildMessageReactions",
-    	"GuildMessages",
-    	"GuildVoiceStates",
-    	"GuildMessageTyping",
-    	"GuildIntegrations",
-	"GuildEmojisAndStickers",
-	"GuildBans",
-	"GuildInvites",
-	"DirectMessageReactions",
-	"GuildPresences",
-	"GuildWebhooks",
-    	"MessageContent",
-    	"DirectMessageTyping",
-    	"DirectMessages",
-	"AutoModerationConfiguration",
-	"AutoModerationExecution",
-	GatewayIntentBits.GuildMessages,
-	GatewayIntentBits.GuildMembers,
-    	GatewayIntentBits.Guilds,
-	GatewayIntentBits.DirectMessages,
-	GatewayIntentBits.MessageContent,
-	GatewayIntentBits.DirectMessageTyping
-       ],
-	   'partials': [Partials.Channel]
-    });
-
-module.exports = client;
-client.slashCommands = new Collection();
-client.commands = new Collection();
-
-client.on("interactionCreate", async (interaction) => {
-    if (!interaction.guild) return;
-
-    if (interaction.isCommand()) {
-
-        const cmd = client.slashCommands.get(interaction.commandName);
-
-        if (!cmd) return;
-		
-	cmd.run(client, interaction,handleVideo, queue, disconnectToChannel);
-
-    }
-	
-    if (interaction.isContextMenuCommand()) {
+  const {
+    Client,
+    GatewayIntentBits,
+    InteractionType,
+    Collection,
+    EmbedBuilder,
+    ActivityType,
+    escapeMarkdown,
+    Partials,
+    AttachmentBuilder
+  } = require("discord.js");
+  
+  const {
+      NoSubscriberBehavior,
+      StreamType,
+      createAudioPlayer,
+      createAudioResource,
+      createReadStream,
+      entersState,
+      AudioPlayerStatus,
+      VoiceConnectionStatus,
+      joinVoiceChannel
+  } = require('@discordjs/voice');
+  
+  const config = require("./config.json");
+  const PlayDL = require("play-dl");
+  const queue = new Map();
+  
+  const client = new Client({ 
+      intents: [
+          "Guilds",
+          "GuildMessages",
+          "GuildVoiceStates",
+          "GuildMessageTyping",
+          "GuildIntegrations",
+          "MessageContent",
+          "DirectMessageTyping",
+          "DirectMessages",
+          GatewayIntentBits.Guilds
+      ]});
+      
+  module.exports = client;
+  client.slashCommands = new Collection();
+  client.commands = new Collection();
+  
+  client.on("interactionCreate", async (interaction) => {
+      if (!interaction.guild) return;
+  
+      if (interaction.isCommand()){
+  
+          const cmd = client.slashCommands.get(interaction.commandName);
+  
+          if(!cmd)return;
+          
+          cmd.run(client, interaction, handleVideo, queue, disconnectToChannel);
+  
+      }
+      
+      if (interaction.isContextMenuCommand()) {
         await interaction.deferReply({ ephemeral: false });
         const command = client.slashCommands.get(interaction.commandName);
         if (command) command.run(client, interaction,handleVideo, queue, disconnectToChannel);
+      }
 
-    }
-});
+  });
+  
+  client.on('ready', () => {
+      console.log("Estou pronta!"); 
+  });
+  
+  require('./handler')(client);
 
-client.on('ready', () => {
-    console.log("Estou pronta!"); 
-});
-
-require('./handler')(client);
-
-async function connectToChannel(channel) {
+  async function connectToChannel(channel) {
     const connection = joinVoiceChannel({
 		channelId: channel.id,
 		guildId: channel.guild.id,
@@ -100,9 +83,9 @@ async function connectToChannel(channel) {
 		connection.destroy();
 		throw error;
 	}
-}
+  }
 
-async function disconnectToChannel(channel) {
+  async function disconnectToChannel(channel) {
 
 	const connection = joinVoiceChannel({
 		channelId: channel.id,
@@ -111,10 +94,11 @@ async function disconnectToChannel(channel) {
 	});
 	
     connection.destroy();
-}
-			
+  }
+
 	
-async function handleVideo(video, msg, voiceChannel, playlist = false) {
+  async function handleVideo(video, msg, voiceChannel, playlist = false) {
+    
 	const serverQueue = queue.get(msg.guild.id);
 
 	console.log(video) // ID de informações do video
@@ -124,14 +108,14 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		title: escapeMarkdown(video.title),
 		url: `https://www.youtube.com/watch?v=${video.id}`
 		/*
-		Se você quiser personalizar o bot completamente do seu jeito adicione mais informações a este objeto
+		Se você quiser personalizar o bot completamente do seu jeito, adicione mais informações a este objeto
 		*/
 	};
 
 	if (!serverQueue) {
 
 		const queueConstruct = {
-            		player: createAudioPlayer(),
+            player: createAudioPlayer(),
 			textChannel: msg.channel,
 			voiceChannel: voiceChannel,
 			connection: null,
@@ -139,7 +123,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 			volume: 5,
 			playing: true,
 			loop: false, 
-            		stopLoop: false // Uma solução para interromper o loop no final da música
+            stopLoop: false // Uma solução para interromper o loop no final da música
 		};
 
 		queue.set(msg.guild.id, queueConstruct);
@@ -164,7 +148,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		return undefined;
 	}
 	
-async function play(guild, song) {
+  async function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
 	if (!song) {
@@ -190,13 +174,14 @@ async function play(guild, song) {
 
 	serverQueue.player.on(AudioPlayerStatus.Idle,async () => {
 
-	        if(serverQueue.stopLoop){
-	            clearTimeout(serverQueue.stopLoop);
-		    serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
-	            return;
-		}
-		
-	        serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+        if(serverQueue.stopLoop){
+            clearTimeout(serverQueue.stopLoop);
+			serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+            return;
+        }
+
+        serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+
 		if(!serverQueue.loop) serverQueue.songs.shift();
 		play(guild, serverQueue.songs[0]);
 		
@@ -205,9 +190,6 @@ async function play(guild, song) {
 	resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
 	serverQueue.connection = resource;
 		
-}
+  }
 
-client.login(config.token)
-
-
-
+  client.login(config.token);
