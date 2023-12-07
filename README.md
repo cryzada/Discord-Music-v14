@@ -4,7 +4,7 @@
 
 # Requirements
 - FFmpeg
-- Node v16
+- Node versão >= 18
 - Token <a target="_black" href="https://discord.com/developers/applications">Discord</a>
 
 ## package.json
