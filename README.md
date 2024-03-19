@@ -1,6 +1,6 @@
 # Discord.js - Buscando músicas no YouTube
 
-<img src="https://cdn.discordapp.com/attachments/1040331064465440808/1165101386627825815/disc.png">
+<img src="https://s2.loli.net/2024/03/19/WSaEdc4gqBp78b6.jpg">
 
 # Requirements
 - FFmpeg
