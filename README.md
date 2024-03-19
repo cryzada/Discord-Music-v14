@@ -20,4 +20,4 @@
 
 # Tutorial em vídeo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/QgTlmBlD65U&t=1s" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+- Vídeo <a target="_black" href="https://www.youtube.com/watch?v=QgTlmBlD65U&t=1s">Clique aqui</a>
