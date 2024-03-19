@@ -18,3 +18,6 @@
 |tweetnacl         |`^1.0.3`                       |
 |play-dl           |`^1.9.7`                       |
 
+# Tutorial em vídeo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QgTlmBlD65U?si=1-CwK6al2HP0zMDg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
