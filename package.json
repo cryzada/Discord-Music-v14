@@ -15,6 +15,7 @@
     "discord.js": "^14.13.0",
     "libsodium-wrappers": "^0.7.13",
     "play-dl": "^1.9.7",
-    "tweetnacl": "^1.0.3"
+    "tweetnacl": "^1.0.3",
+    "yt-stream": "^1.5.8"
   }
 }
