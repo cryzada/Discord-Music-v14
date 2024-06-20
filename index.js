@@ -25,7 +25,7 @@ const {
 
 // Importa configurações e módulos adicionais
 const config = require("./config.json");
-const PlayDL = require("play-dl");
+const ytstream = require('yt-stream');
 
 // Cria uma mapa para armazenar as filas de reprodução
 const queue = new Map();
@@ -162,12 +162,14 @@ async function play(guild, song) {
 
     serverQueue.textChannel.send(`Tocando: **${song.title}**`);
 
-    const sond = await PlayDL.stream(song.url, {
-        quality: 2, // qualidade: [0 = mais baixa, 1 = média, 2 = mais alta]
+    const audio = await ytstream.stream(song.url, {
+        quality: 'high',
+        type: 'audio',
+        highWaterMark: 1048576 * 32
     });
 
-    const resource = createAudioResource(sond.stream, {
-        inputType: sond.type,
+    const resource = createAudioResource(audio.stream, {
+        inputType: audio.type,
         inlineVolume: true // Deixe verdadeiro se quiser alterar o volume da música
     });
 
