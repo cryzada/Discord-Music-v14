@@ -25,7 +25,7 @@ const {
 
 // Importa configurações e módulos adicionais
 const config = require("./config.json");
-const ytstream = require('yt-stream');
+const ytdl = require('discord-ytdl-core');
 
 // Cria uma mapa para armazenar as filas de reprodução
 const queue = new Map();
@@ -162,38 +162,41 @@ async function play(guild, song) {
 
     serverQueue.textChannel.send(`Tocando: **${song.title}**`);
 
-    const audio = await ytstream.stream(song.url, {
-        quality: 'high',
-        type: 'audio',
-        highWaterMark: 1048576 * 32
-    });
+    try {
+        const stream = ytdl(song.url, {
+            filter: "audioonly",
+            opusEncoded: true,
+            encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
+        });
 
-    const resource = createAudioResource(audio.stream, {
-        inputType: audio.type,
-        inlineVolume: true // Deixe verdadeiro se quiser alterar o volume da música
-    });
+        const resource = createAudioResource(stream, {
+            inlineVolume: true
+        });
 
-    serverQueue.player.play(resource);
+        serverQueue.player.play(resource);
 
-    entersState(serverQueue.player, AudioPlayerStatus.Playing);
+        await entersState(serverQueue.player, AudioPlayerStatus.Playing);
 
-    serverQueue.player.on(AudioPlayerStatus.Idle, async () => {
+        serverQueue.player.on(AudioPlayerStatus.Idle, async () => {
+            if (serverQueue.stopLoop) {
+                clearTimeout(serverQueue.stopLoop);
+                serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+                return;
+            }
 
-        if (serverQueue.stopLoop) {
-            clearTimeout(serverQueue.stopLoop);
             serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
-            return;
-        }
 
-        serverQueue.stopLoop = setTimeout(() => serverQueue.stopLoop = false, 5000);
+            if (!serverQueue.loop) serverQueue.songs.shift();
+            await play(guild, serverQueue.songs[0]);
+        });
 
-        if (!serverQueue.loop) serverQueue.songs.shift();
-        play(guild, serverQueue.songs[0]);
-
-    });
-
-    resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
-    serverQueue.connection = resource;
+        resource.volume.setVolumeLogarithmic(serverQueue.volume / 5);
+        serverQueue.connection = resource;
+    } catch (error) {
+        console.error('Error playing song:', error);
+        serverQueue.songs.shift();
+        await play(guild, serverQueue.songs[0]);
+    }
 }
 
 // Faz login com o token fornecido no arquivo de configuração
