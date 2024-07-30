@@ -25,7 +25,10 @@ const {
 
 // Importa configurações e módulos adicionais
 const config = require("./config.json");
-const ytdl = require('discord-ytdl-core');
+
+const axios = require('axios');
+const { pipeline } = require('stream');
+
 
 // Cria uma mapa para armazenar as filas de reprodução
 const queue = new Map();
@@ -163,13 +166,10 @@ async function play(guild, song) {
     serverQueue.textChannel.send(`Tocando: **${song.title}**`);
 
     try {
-        const stream = ytdl(song.url, {
-            filter: "audioonly",
-            opusEncoded: true,
-            encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
-        });
 
-        const resource = createAudioResource(stream, {
+        const response = await axios.post('https://stream-16v9.onrender.com/', { url: song.url }, { responseType: 'stream' });
+
+        const resource = createAudioResource(response.data, {
             inlineVolume: true
         });
 
