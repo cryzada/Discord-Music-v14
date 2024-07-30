@@ -12,11 +12,10 @@
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.16.0",
-    "discord-ytdl-core": "^5.0.4",
+    "axios": "^1.7.2",
     "discord.js": "^14.13.0",
     "libsodium-wrappers": "^0.7.13",
     "play-dl": "^1.9.7",
-    "tweetnacl": "^1.0.3",
-    "ytdl-core": "^4.11.5"
+    "tweetnacl": "^1.0.3"
   }
 }
