@@ -202,9 +202,11 @@ async function play(guild, song) {
 // Faz login com o token fornecido no arquivo de configuração
 client.login(config.token);
 
+/*
 // IGNORAR TODOS OS ERROS
 process.on('multipleResolves', (type, reason, promise) => {});
 process.on('unhandRejection', (reason, promise) => {});
 process.on('uncaughtException', (error, origin) => {});
 process.on('uncaughtExceptionMonitor', (error, origin) => {});
 //
+*/
