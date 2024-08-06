@@ -25,10 +25,7 @@ const {
 
 // Importa configurações e módulos adicionais
 const config = require("./config.json");
-
-const axios = require('axios');
-const { pipeline } = require('stream');
-
+const axios = require("axios");
 
 // Cria uma mapa para armazenar as filas de reprodução
 const queue = new Map();
@@ -163,7 +160,7 @@ async function play(guild, song) {
         return;
     }
 
-    serverQueue.textChannel.send(`Tocando: **${song.title}**`);
+    let m = await serverQueue.textChannel.send({content: `Baixando a faixa de música **${song.title}** ...`});
 
     try {
 
@@ -176,6 +173,8 @@ async function play(guild, song) {
         serverQueue.player.play(resource);
 
         await entersState(serverQueue.player, AudioPlayerStatus.Playing);
+
+        await m.edit({content: `Tocando: **${song.title}**`})
 
         serverQueue.player.on(AudioPlayerStatus.Idle, async () => {
             if (serverQueue.stopLoop) {
@@ -201,12 +200,3 @@ async function play(guild, song) {
 
 // Faz login com o token fornecido no arquivo de configuração
 client.login(config.token);
-
-
-// IGNORAR TODOS OS ERROS
-process.on('multipleResolves', (type, reason, promise) => {});
-process.on('unhandRejection', (reason, promise) => {});
-process.on('uncaughtException', (error, origin) => {});
-process.on('uncaughtExceptionMonitor', (error, origin) => {});
-//
-
